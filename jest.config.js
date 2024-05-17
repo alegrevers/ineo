@@ -5,7 +5,6 @@ require('dotenv').config({
 module.exports = {
   clearMocks: true,
   collectCoverage: true,
-  preset: '@shelf/jest-mongodb',
   testEnvironment: 'jest-environment-node',
   watchPathIgnorePatterns: ['globalConfig'],
   setupFilesAfterEnv: [
