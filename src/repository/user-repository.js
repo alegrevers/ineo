@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize')
+const bcrypt = require('bcrypt');
 const database = require("../utils/database-utils");
 
 const User = database.define('users', {
@@ -20,23 +21,32 @@ const User = database.define('users', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    // protest: [{
-
-    //     debt: {
-    //         type: DataTypes.DOUBLE,
-    //     },
-    //     description: {
-    //         type: DataTypes.STRING,
-    //     }
-    // }],
-    // fee: [{
-    //     amount: {
-    //         type: DataTypes.DOUBLE,
-    //     },
-    //     description: {
-    //         type: DataTypes.STRING,
-    //     }
-    // }]
+}, {
+    hooks: {
+        beforeCreate: async (user) => {
+            if (user.password) {
+                const salt = await bcrypt.genSaltSync(10, 'a');
+                user.password = bcrypt.hashSync(user.password, salt);
+            }
+        },
+        beforeUpdate:async (user) => {
+            if (user.password) {
+                const salt = await bcrypt.genSaltSync(10, 'a');
+                user.password = bcrypt.hashSync(user.password, salt);
+            }
+        }
+    },
+    instanceMethods: {
+        validPassword: (password) => {
+            return bcrypt.compareSync(password, this.password);
+        }
+    }
 })
+
+    User.prototype.validPassword = async (password, hash) => {
+        return await bcrypt.compareSync(password, hash);
+    }
+
+    // return User;
 
 module.exports = User
