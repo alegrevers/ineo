@@ -1,42 +1,37 @@
 const { DataTypes } = require('sequelize')
 const database = require("../utils/database-utils");
+const User = require('../repository/user-repository')
+const Protest = require('../repository/protest-repository')
 
-const Protest = database.define('users', {
+const Fee = database.define('fees', {
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true
     },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false
+    protest: {
+        type: DataTypes.UUID,
+        references: Protest,
+        key: 'id',
+        allowNull: false,
     },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false
+    user: {
+        type: DataTypes.UUID,
+        references: User,
+        key: 'id',
+        allowNull: false,
     },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false
+    amount: {
+        type: DataTypes.DOUBLE,
+        allowNull: true,
     },
-    // protest: [{
-
-    //     debt: {
-    //         type: DataTypes.DOUBLE,
-    //     },
-    //     description: {
-    //         type: DataTypes.STRING,
-    //     }
-    // }],
-    // fee: [{
-    //     amount: {
-    //         type: DataTypes.DOUBLE,
-    //     },
-    //     description: {
-    //         type: DataTypes.STRING,
-    //     }
-    // }]
 })
 
-module.exports = Protest
+// Fee.belongsToMany(User)
+// Fee.hasOne(Protest, {
+//     foreignKey: 'id',
+// })
+// Protest.belongsTo(Fee)
+
+module.exports = Fee
