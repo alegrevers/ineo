@@ -29,20 +29,18 @@ const doc = {
         }
     ],
     definitions: {
-        Vehicles: {
-            maker: "Ford",
-            year: 2013,
-            model: "Fiesta",
-            color: "White"
+        Users: {
+            email: "marcelo@gmail.com",
+            name: "Marcelo",
+            password: "senha123",
         },
-        AddVehicles: {
-            $maker: "Ford",
-            $year: 2013,
-            $model: "Fiesta",
-            $color: "White"
+        AddUsers: {
+            $email: "marcelo@gmail.com",
+            $name: "Marcelo",
+            $password: "senha123",
         },
-        EditVehicles: {
-            model: "Mustang",
+        EditUser: {
+            model: "Roberto",
         }
     }
 }

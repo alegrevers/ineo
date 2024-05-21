@@ -18,6 +18,8 @@
         "jsonwebtoken": "^9.0.2",
         "pg": "^8.11.5",
         "sequelize": "^6.37.3",
+        "sequelize-mock": "^0.10.2",
+        "sqlite3": "^5.1.7",
         "swagger-autogen": "^2.23.7",
         "swagger-ui-express": "^5.0.0"
     },

@@ -2,8 +2,8 @@ const express = require('express');
 const users = require('./routes/user');
 const protest = require('./routes/protest');
 const fee = require('./routes/fee');
-// const swaggerUi = require('swagger-ui-express')
-// const swaggerFile = require('../swagger_output.json')
+const swaggerUi = require('swagger-ui-express')
+const swaggerFile = require('../swagger_output.json')
 
 var app = express();
 app.use(express.json());
@@ -16,7 +16,7 @@ app.use(function(req, res, next) {
   next();
 })
 
-// app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 app.use('/api/user', users);
 app.use('/api/protest', protest);
 app.use('/api/fee', fee);
