@@ -1,15 +1,13 @@
-const User = require('../models/user-model')
-const UserConverter = require("../converter/user-converter")
-const UserValidator = require("../validator/user-validator")
-const converter = new UserConverter()
-const validator = new UserValidator()
+const FeeValidator = require("../validator/fee-validator")
+const Fee = require('../models/fee-model')
+const validator = new FeeValidator()
 
-class UserHandler {
+class FeeHandler {
     async findAll(req, res) {
         try {
-            const users = await User.findAll()
+            const fee = await Fee.findAll()
 
-            res.send(users.map(user => converter.toDto(user)))
+            res.send(fee)
         } catch (error) {
             return res.status(500).json({ error: error.message })
         }
@@ -19,9 +17,9 @@ class UserHandler {
         try {
             const filter = req.params.id
             await validator.validateId(filter)
-            const user = await User.findByPk(filter)
+            const fee = await Fee.findByPk(filter)
 
-            res.json(converter.toDto(user))
+            res.json(fee)
         } catch (error) {
             next(error)
         }
@@ -33,9 +31,9 @@ class UserHandler {
             const insertData = req.body
             validator.validateInsert(insertData)
 
-            const insertedUser = await User.create(insertData)
+            const insertedFee = await Fee.create(insertData)
 
-            res.json(converter.toDto(insertedUser))
+            res.json(insertedFee)
         } catch (error) {
             next(error)
         }
@@ -45,9 +43,9 @@ class UserHandler {
         try {
             await validator.validateId(req.params.id)
 
-            const updatedUser = await User.update(req.body, { where: { id: req.params.id } })
+            const updatedFee = await Fee.update(req.body, { where: { id: req.params.id } })
 
-            res.json(converter.toDto(updatedUser))
+            res.json(updatedFee)
         } catch (error) {
             next(error)
         }
@@ -57,13 +55,13 @@ class UserHandler {
         try {
             await validator.validateId(req.params.id)
 
-            const deletedUser = await User.destroy({ where: { id: req.params.id } })
+            const deletedFee = await Fee.destroy({ where: { id: req.params.id } })
 
-            res.json(converter.toDto(deletedUser))
+            res.json(deletedFee)
         } catch (error) {
             next(error)
         }
     }
 }
 
-module.exports = UserHandler
+module.exports = FeeHandler

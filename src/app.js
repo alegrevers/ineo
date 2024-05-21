@@ -1,5 +1,7 @@
 const express = require('express');
 const users = require('./routes/user');
+const protest = require('./routes/protest');
+const fee = require('./routes/fee');
 // const swaggerUi = require('swagger-ui-express')
 // const swaggerFile = require('../swagger_output.json')
 
@@ -9,6 +11,8 @@ app.use(express.urlencoded({ extended: false }));
 
 // app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 app.use('/api/user', users);
+app.use('/api/protest', protest);
+app.use('/api/fee', fee);
 
 app.use((err, req, res, next) => {
   if (err instanceof Error) {

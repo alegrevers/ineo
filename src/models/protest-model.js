@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize')
-const User = require('../repository/user-repository')
-const Fee = require('../repository/fee-repository')
+const User = require('./user-model')
 const database = require("../utils/database-utils");
 
 const Protest = database.define('protests', {
@@ -16,23 +15,16 @@ const Protest = database.define('protests', {
     description: {
         type: DataTypes.STRING,
     },
-    user: {
+    user_id: {
         type: DataTypes.UUID,
-        references: User,
-        key: 'id'
-    },
-    fee: {
-        type: DataTypes.UUID,
-        references: Fee,
-        key: 'id',
         allowNull: true,
-    }
+        references: {
+            model: User,
+            key: 'id'
+        },
+    },
 })
 
-// Protest.belongsToMany(User)
-Protest.hasOne(Fee, {
-    foreignKey: 'id',
-})
-Fee.belongsTo(Protest)
+// Protest.belongsToMany(User, { foreignKey: 'id', as: 'user_id' })
 
 module.exports = Protest

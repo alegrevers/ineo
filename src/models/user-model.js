@@ -1,7 +1,5 @@
 const { DataTypes } = require('sequelize')
 const bcrypt = require('bcrypt');
-const Protest = require('../repository/protest-repository')
-const Fee = require('../repository/fee-repository')
 const database = require("../utils/database-utils");
 
 const User = database.define('users', {
@@ -23,17 +21,6 @@ const User = database.define('users', {
         type: DataTypes.STRING,
         allowNull: false
     }
-    // ,
-    // protest: {
-    //     references: Protests,
-    //     key: 'id',
-    //     allowNull: true,
-    // },
-    // fee: {
-    //     references: Fees,
-    //     key: 'id',
-    //     allowNull: true,
-    // }
 }, {
     hooks: {
         beforeCreate: async (user) => {
@@ -59,14 +46,5 @@ const User = database.define('users', {
 User.prototype.validPassword = async (password, hash) => {
     return await bcrypt.compareSync(password, hash);
 }
-
-// User.hasMany(Protest, {
-//     foreignKey: 'id',
-// })
-// Protest.belongsTo(User);
-// User.hasMany(Fee, {
-//     foreignKey: 'id',
-// })
-// Fee.belongsTo(User);
 
 module.exports = User
