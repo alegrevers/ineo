@@ -162,7 +162,7 @@ Parâmetros da Solicitação:
 ```json
 {
   "user_id": "1231241", // obrigatório
-  "protest_id": "2312323,
+  "protest_id": "2312323",
   "protest_fee": 50,
 }
 ```
@@ -188,7 +188,7 @@ Parâmetros da Solicitação:
 ```json
 {
   "user_id": "1231241",
-  "protest_id": "2312323,
+  "protest_id": "2312323",
   "protest_fee": 50,
 }
 ```
