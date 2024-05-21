@@ -37,7 +37,7 @@ class ProtestHandler {
         }
     }
 
-    async buildFeeInsertObject (protestData) {
+    buildFeeInsertObject (protestData) {
         let protestFee
 
         if (protestData.debt < DEBT_THRESHOLDS.LOW) {
@@ -62,7 +62,7 @@ class ProtestHandler {
 
             const insertedProtest = await Protest.create(insertData)
 
-            const feeInsertData = await this.buildFeeInsertObject(insertedProtest.dataValues)
+            const feeInsertData = this.buildFeeInsertObject(insertedProtest.dataValues)
             await Fee.create(feeInsertData)
 
             res.json(insertedProtest.dataValues)
@@ -71,11 +71,32 @@ class ProtestHandler {
         }
     }
 
+    buildFeeUpdateObject (protestDebt) {
+        let protestFee
+
+        if (protestDebt < DEBT_THRESHOLDS.LOW) {
+            protestFee = protestDebt * DEBT_RATES.LOW;
+        } else if (protestDebt < DEBT_THRESHOLDS.MID) {
+            protestFee = protestDebt * DEBT_RATES.MID;
+        } else {
+            protestFee = protestDebt * DEBT_RATES.HIGH;
+        }
+
+        return {
+            protest_fee: protestFee,
+        }
+    }
+
     async update (req, res, next) {
         try {
             await validator.validateId(req.params.id)
 
             const updatedProtest = await Protest.update(req.body, { where: { id: req.params.id } })
+
+            if (req.body.debt) {
+                const feeUpdateData = this.buildFeeUpdateObject(req.body.debt)
+                await Fee.update(feeUpdateData, { where: { protest_id: req.params.id } })
+            }
 
             res.json(updatedProtest)
         } catch (error) {
@@ -87,6 +108,7 @@ class ProtestHandler {
         try {
             await validator.validateId(req.params.id)
 
+            await Fee.destroy({ where: { protest_id: req.params.id } })
             const deletedProtest = await Protest.destroy({ where: { id: req.params.id } })
 
             res.json(deletedProtest)

@@ -4,13 +4,13 @@ const Fee = require("../models/fee-model")
 
 class FeeValidator {
     validateInsert (insertData) {
-        const { user } = insertData
+        const { user_id } = insertData
 
-        if (!user) throw new UserMissingError()
+        if (!user_id) throw new UserMissingError()
     }
 
     async validateId (id) {
-        const protest = await Fee.findById(id)
+        const protest = await Fee.findByPk(id)
         if (!protest) throw new FeeNotFoundError()
     }
 

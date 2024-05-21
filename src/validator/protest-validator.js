@@ -14,7 +14,8 @@ class ProtestValidator {
     }
 
     async validateId (id) {
-        const protest = await Protest.findById(id)
+        const protest = await Protest.findByPk(id)
+        console.log('🚀 ~ protest:', protest)
         if (!protest) throw new ProtestNotFoundError()
     }
 

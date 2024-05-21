@@ -37,14 +37,14 @@ router.put('/:id',
             description: 'Informações do protesto.',
             schema: { $ref: "#/definitions/EditProtestos" }
     } */
-    protestHandler.update
+    protestHandler.update.bind(protestHandler)
 )
 
 router.delete('/:id',
     // #swagger.tags = ['Protestos']
     // #swagger.description = 'Endpoint para atualizar um protesto.'
 
-    protestHandler.delete
+    protestHandler.delete.bind(protestHandler)
 )
 
 module.exports = router

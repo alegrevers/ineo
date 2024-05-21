@@ -14,7 +14,7 @@ class UserValidator {
     }
 
     async validateId (id) {
-        const user = await User.findById(id)
+        const user = await User.findByPk(id)
         if (!user) throw new UserNotFoundError()
     }
 
