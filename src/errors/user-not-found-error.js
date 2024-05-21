@@ -1,6 +1,6 @@
 class UserNotFoundError extends Error {
     constructor() {
-      super('Usuário não encontradp');
+      super('Usuário não encontrado');
       this.name = 'ValidationError';
       this.statusCode = 404;
     }

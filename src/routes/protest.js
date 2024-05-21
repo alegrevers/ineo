@@ -1,5 +1,6 @@
 const express = require('express')
 const ProtestHandler = require('../handlers/protest-handler')
+const verifyToken = require('../middleware/auth-middleware')
 const protestHandler = new ProtestHandler()
 var router = express.Router()
 
@@ -12,6 +13,7 @@ router.get('/',
 router.get('/:id',
     /* #swagger.tags = ['Protestos']
        #swagger.description = 'Endpoint para encontrar um protesto pelo id.' */
+    [verifyToken],
     protestHandler.findById
 )
 
@@ -25,6 +27,7 @@ router.post('/',
             required: true,
             schema: { $ref: "#/definitions/AddProtestos" }
     } */
+    [verifyToken],
     protestHandler.insert.bind(protestHandler)
 )
 
@@ -37,13 +40,14 @@ router.put('/:id',
             description: 'Informações do protesto.',
             schema: { $ref: "#/definitions/EditProtestos" }
     } */
+    [verifyToken],
     protestHandler.update.bind(protestHandler)
 )
 
 router.delete('/:id',
     // #swagger.tags = ['Protestos']
     // #swagger.description = 'Endpoint para atualizar um protesto.'
-
+    [verifyToken],
     protestHandler.delete.bind(protestHandler)
 )
 

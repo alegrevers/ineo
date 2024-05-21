@@ -1,5 +1,6 @@
 const express = require('express')
 const FeeHandler = require('../handlers/fee-handler')
+const verifyToken = require('../middleware/auth-middleware')
 const feeHandler = new FeeHandler()
 var router = express.Router()
 
@@ -12,6 +13,7 @@ router.get('/',
 router.get('/:id',
     /* #swagger.tags = ['Emolumentos']
        #swagger.description = 'Endpoint para encontrar um emolumento pelo id.' */
+    [verifyToken],
     feeHandler.findById
 )
 
@@ -25,6 +27,7 @@ router.post('/',
             required: true,
             schema: { $ref: "#/definitions/AddEmolumentos" }
     } */
+    [verifyToken],
     feeHandler.insert
 )
 
@@ -37,13 +40,14 @@ router.put('/:id',
             description: 'Informações do emolumento.',
             schema: { $ref: "#/definitions/EditEmolumentos" }
     } */
+    [verifyToken],
     feeHandler.update
 )
 
 router.delete('/:id',
     // #swagger.tags = ['Emolumentos']
     // #swagger.description = 'Endpoint para atualizar um emolumento.'
-
+    [verifyToken],
     feeHandler.delete
 )
 

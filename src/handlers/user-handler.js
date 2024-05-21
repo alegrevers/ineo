@@ -1,10 +1,35 @@
 const User = require('../models/user-model')
 const UserConverter = require("../converter/user-converter")
 const UserValidator = require("../validator/user-validator")
+const UserNotFoundError = require('../errors/user-not-found-error')
+const InvalidPasswordError = require('../errors/invalid-password-error');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const converter = new UserConverter()
 const validator = new UserValidator()
 
 class UserHandler {
+    async login (req, res) {
+        const { email, password } = req.body
+
+        const user = await User.findOne({ where: { email: email } })
+        if (!user) throw new UserNotFoundError()
+
+        const passwordValid = await bcrypt.compare(password, user.password)
+        if (!passwordValid) throw new InvalidPasswordError()
+
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+            expiresIn: process.env.JWT_REFRESH_EXPIRATION
+        })
+
+        res.send({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            accessToken: token
+        })
+    }
+
     async findAll(req, res) {
         try {
             const users = await User.findAll()
@@ -31,7 +56,7 @@ class UserHandler {
     async insert (req, res,next) {
         try {
             const insertData = req.body
-            validator.validateInsert(insertData)
+            await validator.validateInsert(insertData)
 
             const insertedUser = await User.create(insertData)
 
