@@ -187,8 +187,6 @@ Parâmetros da Solicitação:
 - Informações do emolumento a serem atualizadas.
 ```json
 {
-  "user_id": "1231241",
-  "protest_id": "2312323",
   "protest_fee": 50,
 }
 ```

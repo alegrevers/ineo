@@ -25,7 +25,7 @@ router.post('/',
             in: 'body',
             description: 'Informações do protesto.',
             required: true,
-            schema: { $ref: "#/definitions/AddProtestos" }
+            schema: { $ref: "#/definitions/AddProtests" }
     } */
     [verifyToken],
     protestHandler.insert.bind(protestHandler)
@@ -38,7 +38,7 @@ router.put('/:id',
     /* #swagger.parameters['updateData'] = {
             in: 'body',
             description: 'Informações do protesto.',
-            schema: { $ref: "#/definitions/EditProtestos" }
+            schema: { $ref: "#/definitions/EditProtest" }
     } */
     [verifyToken],
     protestHandler.update.bind(protestHandler)

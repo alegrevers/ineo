@@ -36,7 +36,7 @@ router.post('/',
             in: 'body',
             description: 'Informações do usuário.',
             required: true,
-            schema: { $ref: "#/definitions/AddUsuários" }
+            schema: { $ref: "#/definitions/AddUsers" }
     } */
     userHandler.insert
 )
@@ -48,7 +48,7 @@ router.put('/:id',
     /* #swagger.parameters['updateData'] = {
             in: 'body',
             description: 'Informações do usuário.',
-            schema: { $ref: "#/definitions/EditUsuários" }
+            schema: { $ref: "#/definitions/EditUser" }
     } */
     [verifyToken],
     userHandler.update

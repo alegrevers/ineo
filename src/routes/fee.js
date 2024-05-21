@@ -25,7 +25,7 @@ router.post('/',
             in: 'body',
             description: 'Informações do emolumento.',
             required: true,
-            schema: { $ref: "#/definitions/AddEmolumentos" }
+            schema: { $ref: "#/definitions/AddFees" }
     } */
     [verifyToken],
     feeHandler.insert
@@ -38,7 +38,7 @@ router.put('/:id',
     /* #swagger.parameters['updateData'] = {
             in: 'body',
             description: 'Informações do emolumento.',
-            schema: { $ref: "#/definitions/EditEmolumentos" }
+            schema: { $ref: "#/definitions/EditFee" }
     } */
     [verifyToken],
     feeHandler.update

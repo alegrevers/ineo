@@ -41,6 +41,32 @@ const doc = {
         },
         EditUser: {
             model: "Roberto",
+        },
+        Protests: {
+            user_id: "1231242",
+            debt: 5000,
+            description: "descrição",
+        },
+        AddProtests: {
+            $user_id: "1231242",
+            $debt: 5000,
+            $description: "descrição",
+        },
+        EditProtest: {
+            debt: 3999,
+        },
+        Fees: {
+            user_id: "1231242",
+            protest_id: "23423525",
+            protest_fee: 50,
+        },
+        AddFees: {
+            $user_id: "1231242",
+            protest_id: "23423525",
+            protest_fee: 50,
+        },
+        EditFee: {
+            protest_fee: 3999,
         }
     }
 }

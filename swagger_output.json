@@ -80,7 +80,7 @@
             "description": "Informações do usuário.",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AddUsuários"
+              "$ref": "#/definitions/AddUsers"
             }
           }
         ],
@@ -141,7 +141,7 @@
             "in": "body",
             "description": "Informações do usuário.",
             "schema": {
-              "$ref": "#/definitions/EditUsuários"
+              "$ref": "#/definitions/EditUser"
             }
           }
         ],
@@ -211,7 +211,7 @@
             "description": "Informações do protesto.",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AddProtestos"
+              "$ref": "#/definitions/AddProtests"
             }
           }
         ],
@@ -275,7 +275,7 @@
             "in": "body",
             "description": "Informações do protesto.",
             "schema": {
-              "$ref": "#/definitions/EditProtestos"
+              "$ref": "#/definitions/EditProtest"
             }
           }
         ],
@@ -345,7 +345,7 @@
             "description": "Informações do emolumento.",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AddEmolumentos"
+              "$ref": "#/definitions/AddFees"
             }
           }
         ],
@@ -409,7 +409,7 @@
             "in": "body",
             "description": "Informações do emolumento.",
             "schema": {
-              "$ref": "#/definitions/EditEmolumentos"
+              "$ref": "#/definitions/EditFee"
             }
           }
         ],
@@ -497,6 +497,100 @@
         "model": {
           "type": "string",
           "example": "Roberto"
+        }
+      }
+    },
+    "Protests": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "example": "1231242"
+        },
+        "debt": {
+          "type": "number",
+          "example": 5000
+        },
+        "description": {
+          "type": "string",
+          "example": "descrição"
+        }
+      }
+    },
+    "AddProtests": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "example": "1231242"
+        },
+        "debt": {
+          "type": "number",
+          "example": 5000
+        },
+        "description": {
+          "type": "string",
+          "example": "descrição"
+        }
+      },
+      "required": [
+        "user_id",
+        "debt",
+        "description"
+      ]
+    },
+    "EditProtest": {
+      "type": "object",
+      "properties": {
+        "debt": {
+          "type": "number",
+          "example": 3999
+        }
+      }
+    },
+    "Fees": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "example": "1231242"
+        },
+        "protest_id": {
+          "type": "string",
+          "example": "23423525"
+        },
+        "protest_fee": {
+          "type": "number",
+          "example": 50
+        }
+      }
+    },
+    "AddFees": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "example": "1231242"
+        },
+        "protest_id": {
+          "type": "string",
+          "example": "23423525"
+        },
+        "protest_fee": {
+          "type": "number",
+          "example": 50
+        }
+      },
+      "required": [
+        "user_id"
+      ]
+    },
+    "EditFee": {
+      "type": "object",
+      "properties": {
+        "protest_fee": {
+          "type": "number",
+          "example": 3999
         }
       }
     }
