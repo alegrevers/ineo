@@ -1,6 +1,11 @@
-const SequelizeMock = require("sequelize-mock")
 const request = require('supertest')
-const app = require('../app')
+const database = require('../utils/database-utils');
+const app = require('../app');
+const UserNotFoundError = require('../errors/user-not-found-error');
+const EmailMissingError = require('../errors/email-missing-error');
+database.sync()
+
+const fakeUserId = 'e3c81a61-b4d9-45a2-99bb-8255959fa10c'
 let userId
 let token
 const testData = {
@@ -10,28 +15,18 @@ const testData = {
 }
 
 describe('Handler Test', () => {
-    let sequelizeMock
-    let User
-    let Protest
-    let Fee
-
     beforeAll(async () => {
-        // sequelizeMock = new SequelizeMock()
-        // User = sequelizeMock.define("User", {id: 1, name: "abc", email:"email@email.com"})
-        // User.prototype.create = jest.fn().mockResolvedValue({id: 1, name: "abc", email:"email@email.com"})
         const testUser = await request(app).post('/api/user').send(testData)
         const userData = JSON.parse(testUser.res.text)
-
         userId = userData.id
-    })
 
-    beforeEach(async () => {
         const tokenRequest = await request(app).post('/api/user/login').send(testData)
         const tokenData = JSON.parse(tokenRequest.res.text)
-        token = tokenData.accessToken
+        token = `Bearer ${tokenData.accessToken}`
+
     })
 
-    afterEach(async () => {
+    afterAll(async () => {
         await request(app).delete(`/api/user/${userId}`).set({ authorization: token })
     })
 
@@ -43,57 +38,58 @@ describe('Handler Test', () => {
 
     test('Get user by Id', async () =>{
         const res = await request(app).get(`/api/user/${userId}`)
-            .set({ authorization: token })
-            .expect(200)
-        expect(res.body).toEqual({ id: userId, ...testData})
+        .set({ authorization: token })
+        .expect(200)
+        expect(res.body).toEqual({ id: userId, name: testData.name, email: testData.email })
     })
 
-    test('Shouldn\'t Get user by Id by not found', async () =>{
-        const res = await request(app).get(`/api/user/${new ObjectId()}`)
+    test('Shouldn\'t Get user by Id by user not found', async () =>{
+        const res = await request(app).get(`/api/user/${fakeUserId}`).set({ authorization: token })
 
-        expect(res.status).toEqual(new IdNotFoundError().statusCode)
-        expect(JSON.parse(res.error.text).error).toEqual(new IdNotFoundError().message)
+        expect(res.status).toEqual(new UserNotFoundError().statusCode)
+        expect(JSON.parse(res.error.text).error).toEqual(new UserNotFoundError().message)
     })
 
     test('Insert new user', async () =>{
         const insertData = {
-            maker: 'chevrolet',
-            model: 'cruze',
-            year: 2018,
-            color: 'grey'
+            name: 'roberto@gmail.com',
+            email: 'Roberto',
+            password: 'grey'
         }
         const res = await request(app).post('/api/user')
             .send(insertData)
             .expect(200)
 
         const newId = res.body.id
-        expect(res.body).toEqual({ id: newId, ...insertData})
+        expect(res.body).toEqual({ id: newId, name: insertData.name, email: insertData.email })
+        await request(app).delete(`/api/user/${newId}`).set({ authorization: token })
     })
 
-    test('Shouldn\'t Insert new user by model missing', async () =>{
+    test('Shouldn\'t Insert new user by email missing', async () =>{
         const insertData = {
-            maker: 'chevrolet',
-            year: 2018,
-            color: 'grey'
+            name: 'Roberto',
+            password: 'grey'
         }
         const res = await request(app).post('/api/user')
             .send(insertData)
             .expect(400)
 
-        expect(res.status).toEqual(new ModelMissingError().statusCode)
-        expect(JSON.parse(res.error.text).error).toEqual(new ModelMissingError().message)
+        expect(res.status).toEqual(new EmailMissingError().statusCode)
+        expect(JSON.parse(res.error.text).error).toEqual(new EmailMissingError().message)
     })
 
     test('Update a user', async () =>{
         const updateData = {
-            maker: 'chevrolet',
+            email: 'carlitos@gmail.com',
         }
 
         await request(app).put(`/api/user/${userId}`)
             .send(updateData)
+            .set({ authorization: token })
             .expect(200)
 
         const updatedData = await request(app).get(`/api/user/${userId}`)
+            .set({ authorization: token })
             .expect(200)
 
         expect(updatedData.body.maker).toEqual(updateData.maker)
@@ -101,48 +97,52 @@ describe('Handler Test', () => {
 
     test('Shouldn\'t Update new user by id not found', async () =>{
         const updateData = {
-            maker: 'chevrolet',
+            email: 'chevrolet',
         }
-        const res = await request(app).put(`/api/user/${new ObjectId()}`)
+        const res = await request(app).put(`/api/user/${fakeUserId}`)
             .send(updateData)
+            .set({ authorization: token })
             .expect(404)
 
-            expect(res.status).toEqual(new IdNotFoundError().statusCode)
-            expect(JSON.parse(res.error.text).error).toEqual(new IdNotFoundError().message)
+            expect(res.status).toEqual(new UserNotFoundError().statusCode)
+            expect(JSON.parse(res.error.text).error).toEqual(new UserNotFoundError().message)
     })
 
     test('Delete a user', async () =>{
         const insertData = {
-            maker: 'chevrolet',
-            model: 'cruze',
-            year: 2018,
-            color: 'grey'
+            name: 'chevrolet',
+            email: 'cruze',
+            password: 'grey'
         }
         const insertedData = await request(app).post('/api/user')
             .send(insertData)
+            .set({ authorization: token })
             .expect(200)
 
         const newId = insertedData.body.id
 
         await request(app).delete(`/api/user/${newId}`)
+            .set({ authorization: token })
             .expect(200)
 
         const fetchData = await request(app).get('/api/user')
             .expect(200)
 
         const deletedData = await request(app).get(`/api/user/${newId}`)
+            .set({ authorization: token })
             .expect(404)
 
-        expect(fetchData.body).toHaveLength(2)
-        expect(deletedData.status).toEqual(new IdNotFoundError().statusCode)
-        expect(JSON.parse(deletedData.error.text).error).toEqual(new IdNotFoundError().message)
+        expect(fetchData.body).toHaveLength(1)
+        expect(deletedData.status).toEqual(new UserNotFoundError().statusCode)
+        expect(JSON.parse(deletedData.error.text).error).toEqual(new UserNotFoundError().message)
     })
 
     test('Shouldn\'t Delete new user by id not found', async () =>{
-        const res = await request(app).delete(`/api/user/${new ObjectId()}`)
+        const res = await request(app).delete(`/api/user/${fakeUserId}`)
+            .set({ authorization: token })
             .expect(404)
 
-        expect(res.status).toEqual(new IdNotFoundError().statusCode)
-        expect(JSON.parse(res.error.text).error).toEqual(new IdNotFoundError().message)
+        expect(res.status).toEqual(new UserNotFoundError().statusCode)
+        expect(JSON.parse(res.error.text).error).toEqual(new UserNotFoundError().message)
     })
 })

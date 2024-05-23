@@ -25,6 +25,4 @@ const Protest = database.define('protests', {
     },
 })
 
-// Protest.belongsToMany(User, { foreignKey: 'id', as: 'user_id' })
-
 module.exports = Protest
